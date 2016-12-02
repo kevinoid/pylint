@@ -20,6 +20,8 @@ before_install:
   - uname -a
   - lsb_release -a
 install:
+  - sudo apt-get -qq update
+  - sudo apt-get install -y libenchant-dev
   - pip install tox coverage coveralls
   - virtualenv --version
   - easy_install --version
