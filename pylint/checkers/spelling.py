@@ -93,7 +93,7 @@ class SpellingChecker(BaseTokenChecker):
         if enchant is None:
             return
         dict_name = self.config.spelling_dict
-        if not dict_name:
+        if not dict_name and not self.config.spelling_private_dict_file:
             return
 
         self.ignore_list = [w.strip() for w in self.config.spelling_ignore_words.split(",")]
@@ -107,8 +107,12 @@ class SpellingChecker(BaseTokenChecker):
                 self.config.spelling_private_dict_file)
 
         if self.config.spelling_private_dict_file:
-            self.spelling_dict = enchant.DictWithPWL(
-                dict_name, self.config.spelling_private_dict_file)
+            if dict_name:
+                self.spelling_dict = enchant.DictWithPWL(
+                    dict_name, self.config.spelling_private_dict_file)
+            else:
+                self.spelling_dict = enchant.request_pwl_dict(
+                    self.config.spelling_private_dict_file)
             self.private_dict_file = open(
                 self.config.spelling_private_dict_file, "a")
         else:
